@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">RemoteDebug</string>
+    <string name="exec">Exec</string>
+    <string name="clear_input_cmd">Clear</string>
+    <string name="enlarge_font">Enlarge font</string>
+    <string name="shrink_font">Shrink font</string>
+    <string name="force_exit">Ctrl+C</string>
+</resources>
