@@ -85,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
             int id = message.arg1;
             switch (id) {
                 case QuickMenu.CLEAR_INPUT_VIEW_CONTENT:
-                    mInputView.setText("");
+                    mResultView.setText("");
+                    mResultView.setVisibility(View.GONE);
                     break;
                 case QuickMenu.FORCE_EXIT:
                     if (wrapper != null) {
