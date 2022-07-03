@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
             int id = message.arg1;
             switch (id) {
                 case QuickMenu.CLEAR_INPUT_VIEW_CONTENT:
+                    MyCallback.clear();
                     mResultView.setText("");
                     mResultView.setVisibility(View.GONE);
                     break;
@@ -172,6 +173,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 mInputView.setText("");
             });
+        }
+
+        public static void clear() {
+            STRING_BUILDER.delete(0, STRING_BUILDER.length());
         }
     }
 }
