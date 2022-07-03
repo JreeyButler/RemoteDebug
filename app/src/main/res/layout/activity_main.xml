@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <EditText
+            <TextView
                 android:id="@+id/exec_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,6 +34,7 @@
                 android:paddingTop="6dp"
                 android:paddingEnd="6dp"
                 android:textColor="@android:color/white"
+                android:textIsSelectable="true"
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:ignore="SmallSp" />

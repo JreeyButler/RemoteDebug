@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -26,7 +27,7 @@ import cc.dipperx.debug.remote.view.QuickMenuAdapter;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private EditText mInputView;
-    private EditText mResultView;
+    private TextView mResultView;
     private TextView mCmdPath;
     private HandlerThread thread;
     private Handler execHandler;
@@ -93,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
                     if (wrapper != null) {
                         wrapper.forceExit();
                     }
+                    if (mainHandler != null) {
+                        mainHandler.removeCallbacksAndMessages(null);
+                    }
                     break;
                 default:
                     break;
@@ -124,13 +128,13 @@ public class MainActivity extends AppCompatActivity {
         private static final int MAX_LENGTH = 10000;
 
         public static final StringBuilder STRING_BUILDER = new StringBuilder();
-        private final EditText mResultView;
+        private final TextView mResultView;
         private final Handler mainHandler;
         private final TextView mPathView;
         private final EditText mInputView;
 
 
-        public MyCallback(TextView mPathView, EditText mInputView, EditText mResultView, Handler mainHandler) {
+        public MyCallback(TextView mPathView, EditText mInputView, TextView mResultView, Handler mainHandler) {
             this.mPathView = mPathView;
             this.mInputView = mInputView;
             this.mResultView = mResultView;
@@ -140,17 +144,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onExecCmdWithPath(String cmd, String path) {
             mainHandler.post(() -> mPathView.setText(path));
-            mainHandler.post(() -> show(path + cmd));
+            show(path + cmd);
         }
 
         @Override
         public void onExecResult(String content) {
-            mainHandler.post(() -> show(content));
+            show(content);
         }
 
         @Override
         public void onErrorMsg(String errMsg) {
-            mainHandler.post(() -> show(errMsg));
+            show(errMsg);
         }
 
         public void show(String content) {
@@ -169,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 if (!"".equals(totalContent)) {
                     mResultView.setVisibility(View.VISIBLE);
                     mResultView.setText(totalContent);
-                    mResultView.setSelection(totalContent.length());
                 }
                 mInputView.setText("");
             });
