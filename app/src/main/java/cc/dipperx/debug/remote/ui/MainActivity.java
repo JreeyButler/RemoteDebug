@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -43,10 +45,40 @@ public class MainActivity extends AppCompatActivity {
         mResultView = findViewById(R.id.exec_result);
         mCmdPath = findViewById(R.id.cmd_input_path);
 
+        mInputView.addTextChangedListener(watcher);
+
         GridView menuGridView = findViewById(R.id.quick_menu_view);
         QuickMenuAdapter adapter = new QuickMenuAdapter(this, new Handler(Looper.getMainLooper(), msgCallback));
         menuGridView.setAdapter(adapter);
     }
+
+    private final TextWatcher watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length() > 0) {
+                int index = charSequence.toString().indexOf(System.lineSeparator());
+                char c = 0;
+                if (charSequence.length() > 1) {
+                    c = charSequence.toString().charAt(charSequence.toString().length() - 2);
+                }
+                // "\" = 92
+                final int backslashCode = 92;
+                if (index >= 0 && c != backslashCode) {
+                    execCmd();
+                }
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
 
     private final Handler.Callback msgCallback = message -> {
         if (message.what == QuickMenuAdapter.MSG_VIEW_CLICK) {
@@ -59,9 +91,6 @@ public class MainActivity extends AppCompatActivity {
                     if (wrapper != null) {
                         wrapper.forceExit();
                     }
-                    break;
-                case QuickMenu.EXEC_CMD:
-                    execCmd();
                     break;
                 default:
                     break;
@@ -77,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             execHandler = new Handler(thread.getLooper());
         }
         execHandler.post(() -> {
-            String cmd = mInputView.getText().toString();
+            String cmd = mInputView.getText().toString().trim();
             wrapper = new ProcessBuilderWrapper();
             if (mainHandler == null) {
                 mainHandler = new Handler(Looper.getMainLooper());

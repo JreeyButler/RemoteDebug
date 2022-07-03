@@ -49,6 +49,10 @@ public class ProcessBuilderWrapper {
 
     public void exec(@NonNull String cmd) {
         if ("".equals(cmd.trim())) {
+            // 持续按回车
+            if (callback != null) {
+                callback.onExecCmdWithPath("", EXEC_PATH.toString() + "$ ");
+            }
             return;
         }
         String[] args = cmd.split(" ");

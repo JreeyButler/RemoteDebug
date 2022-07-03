@@ -11,7 +11,10 @@
         android:layout_centerVertical="true"
         android:background="@drawable/bg_button"
         android:gravity="center"
-        android:padding="12dp"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="6dp"
         android:text="@string/app_name"
         android:textColor="@android:color/white" />
 </RelativeLayout>
