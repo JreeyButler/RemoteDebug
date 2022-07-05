@@ -22,6 +22,8 @@ public class ProcessBuilderWrapper {
 
     private static final int MSG_KILL_PROCESS = -9;
 
+    private static final int BUFFER_LENGTH = 1024;
+
     private static final String ROOT_PATH = "/";
     private static final String ROOT_PATH_1 = ".";
     private static final String PREV_PATH = "..";
@@ -51,7 +53,7 @@ public class ProcessBuilderWrapper {
         if ("".equals(cmd.trim())) {
             // 持续按回车
             if (callback != null) {
-                callback.onExecCmdWithPath("", EXEC_PATH.toString() + "$ ");
+                callback.onExecCmdWithPath("", EXEC_PATH + "$ ");
             }
             return;
         }
@@ -78,17 +80,20 @@ public class ProcessBuilderWrapper {
             }
             process = builder.start();
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
+            char[] buffer = new char[BUFFER_LENGTH];
+            int length;
+            while ((length = reader.read(buffer)) != -1) {
+                String s = new String(buffer, 0, length);
                 if (callback != null) {
-                    callback.onExecResult(line.trim());
+                    callback.onExecResult(s);
                 }
             }
             reader.close();
             BufferedReader errReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((line = errReader.readLine()) != null) {
+            while ((length = errReader.read(buffer)) != -1) {
+                String s = new String(buffer, 0, length);
                 if (callback != null) {
-                    callback.onErrorMsg(line.trim());
+                    callback.onErrorMsg(s);
                 }
             }
             errReader.close();
@@ -197,6 +202,7 @@ public class ProcessBuilderWrapper {
     public void forceExit() {
         if (process != null) {
             process.destroyForcibly();
+            process = null;
         }
     }
 
